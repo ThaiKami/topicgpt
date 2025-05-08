@@ -54,12 +54,12 @@ class APIClient:
                 project=os.environ["VERTEX_PROJECT"],
                 location=os.environ["VERTEX_LOCATION"],
             )
-            if model.startswith("gemini"): 
+            if model.startswith("gemini"):
                 self.model_obj = genai.GenerativeModel(self.model)
-        elif api == "ollama": 
+        elif api == "ollama":
             self.client = OpenAI(
-                base_url = 'http://localhost:11434/v1',
-                api_key='ollama', # required, but unused
+                base_url="http://localhost:11434/v1",
+                api_key="ollama",  # required, but unused
             )
         elif api == "vllm":
             self.hf_token = os.environ.get("HF_TOKEN")
@@ -68,14 +68,14 @@ class APIClient:
                 download_dir=os.environ.get("HF_HOME", None),
             )
             self.tokenizer = self.llm.get_tokenizer()
-        elif api == "gemini": 
+        elif api == "gemini":
             genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
             self.model_obj = genai.GenerativeModel(self.model)
-        elif api == "azure": 
+        elif api == "azure":
             self.client = AzureOpenAI(
-            api_key = os.getenv("AZURE_OPENAI_API_KEY"),  
-            api_version = "2024-02-01",
-            azure_endpoint = os.environ.get("AZURE_OPENAI_ENDPOINT")
+                api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+                api_version="2024-02-01",
+                azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"),
             )
         else:
             raise ValueError(
@@ -242,7 +242,6 @@ class APIClient:
                             traceback.print_exc()
                             time.sleep(60)
 
-
                 elif self.api == "vllm":
                     sampling_params = SamplingParams(
                         temperature=temperature,
@@ -260,22 +259,22 @@ class APIClient:
                     )
                     vllm_output = self.llm.generate([final_prompt], sampling_params)
                     return [output.outputs[0].text for output in vllm_output][0]
-                
+
                 elif self.api == "gemini":
                     genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
                     self.model_obj = genai.GenerativeModel(self.model)
                     config = genai.types.GenerationConfig(
-                            max_output_tokens=max_tokens,
-                            temperature=temperature,
-                            top_p=top_p,
-                        )
+                        max_output_tokens=max_tokens,
+                        temperature=temperature,
+                        top_p=top_p,
+                    )
                     # safety config
                     safety_config = {
                         HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
-                          HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
-                          HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
-                          HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE
-                          }
+                        HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+                        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+                        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+                    }
                     try:
                         response = self.model_obj.generate_content(
                             system_message

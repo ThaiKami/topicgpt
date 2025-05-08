@@ -219,7 +219,8 @@ def generate_topic_lvl1(
     try:
         df = df.iloc[: len(responses)]
         df["responses"] = responses
-        df.to_json(out_file, lines=True, orient="records")
+        with open(out_file, "w", encoding="utf-8") as file:
+            df.to_json(file, lines=True, orient="records", force_ascii=False)
     except Exception as e:
         traceback.print_exc()
         with open(f"data/output/generation_1_backup_{model}.txt", "w") as f:

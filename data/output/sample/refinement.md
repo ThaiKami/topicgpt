@@ -1,2 +1,2 @@
-[1] Environment (Count: 4): Involves the management and conservation of natural resources and ecosystems.
-[1] Immigration (Count: 1): Involves policies and regulations related to the movement of people across borders and their legal status.
+[1] Thời tiết (Count: 6): Đề cập đến các hiện tượng khí tượng và dự báo thời tiết.
+[1] Tài chính công (Count: 6): Đề cập đến việc quản lý và phân bổ nguồn vốn ngân sách nhà nước cho các dự án đầu tư công.

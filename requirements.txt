@@ -17,3 +17,9 @@ google
 google-generativeai
 torch
 transformers
+accelerate
+bertopic
+hdbscan
+umap-learn
+matplotlib
+pyvi
