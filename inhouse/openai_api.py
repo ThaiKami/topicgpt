@@ -11,7 +11,7 @@ client = OpenAI(api_key=api_key)
 with open("data/clusters_top10_sorted.json") as f:
     clusters_data = json.load(f)
 
-with open("prompt/base_prompt.txt", encoding="utf-8") as f:
+with open("prompt/merge_prompt.txt", encoding="utf-8") as f:
     base_prompt = f.read()
 
 random.seed(42)
@@ -42,6 +42,7 @@ for topic, cluster_id in zip(topics, clusters_data):
     temp_dict = {}
     temp_dict["topic"] = topic
     temp_dict["numTexts"] = clusters_data[cluster_id]["numTexts"]
+    temp_dict["cluster_id"] = cluster_id
     final_dict.append(temp_dict)
     # clusters_data[cluster_id]["topic"] = topic
 

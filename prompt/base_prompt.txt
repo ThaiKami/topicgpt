@@ -1,7 +1,7 @@
 You will receive a few documents, your job is to come up with a general topic of those documents and a description for that topic
 
 [Instructions]
-Determine topics mentioned in the document. 
+Determine topic mentioned in the document. 
 - The topic label must be as GENERALIZABLE as possible. They must not be document-specific.
 - The topic must have a short general label, and a topic description. 
 - The topic must be broad enough to accommodate all documents 

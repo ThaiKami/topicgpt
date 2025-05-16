@@ -1,62 +1,9 @@
-from transformers import AutoTokenizer, AutoModel
 from sentence_transformers import SentenceTransformer
-import torch
 import json
 import numpy as np
 from tqdm import tqdm
 import argparse
 from pyvi.ViTokenizer import tokenize
-
-
-def compute_embeddings_transformers(
-    input_file, output_file, model_name, batch_size, device
-):
-    """
-    Reads a JSONL corpus, computes mean-pooled embeddings for each text
-    using plain transformers, and saves them to a .npz file.
-    """
-    # 1. Read in IDs & texts
-    with open(input_file, encoding="utf-8") as f:
-        data = json.load(f)
-    ids, texts = [], []
-    for obj in data:
-        ids.append(obj["docId"])
-        texts.append(obj["text"])
-
-    # 2. Load tokenizer & model
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModel.from_pretrained(model_name).to(device)
-    model.eval()
-
-    # 3. Batch & encode
-    all_embs = []
-    for i in tqdm(range(0, len(texts), batch_size)):
-        batch_texts = texts[i : i + batch_size]
-        enc = tokenizer(
-            batch_texts,
-            padding=True,
-            truncation=True,
-            max_length=512,
-            return_tensors="pt",
-        )
-        enc = {k: v.to(device) for k, v in enc.items()}
-
-        with torch.no_grad():
-            out = model(**enc, return_dict=True)
-            last_hidden = out.last_hidden_state  # [B, T, D]
-
-        # 4. Mean-pool, masking out pads
-        attention_mask = enc["attention_mask"].unsqueeze(-1)  # [B, T, 1]
-        sum_embeddings = torch.sum(last_hidden * attention_mask, dim=1)
-        lengths = torch.clamp(attention_mask.sum(dim=1), min=1e-9)
-        batch_embs = sum_embeddings / lengths  # [B, D]
-
-        all_embs.append(batch_embs.cpu().numpy())
-
-    # 5. Stack & save
-    embeddings = np.vstack(all_embs)  # [N, D]
-    np.savez(output_file, ids=ids, embeddings=embeddings)
-    print(f"Saved {len(ids)} embeddings to {output_file}")
 
 
 def compute_embeddings_sbert(
@@ -79,14 +26,14 @@ def compute_embeddings_sbert(
     with open(input_file, encoding="utf-8") as f:
         data = json.load(f)
     ids, texts = [], []
-    for obj in data:
+    for obj in tqdm(data, desc="Loading data"):
         ids.append(obj["docId"])
         texts.append(tokenize(obj["text"]))
 
     # 2. Load the embedding model
     print(f"Loading model '{model_name}'...")
-    model = SentenceTransformer(model_name)
-    model._first_module().max_seq_length = 256
+    model = SentenceTransformer(model_name, trust_remote_code=True)
+    model._first_module().max_seq_length = 512
     # 3. Compute embeddings in batches
     print(f"Computing embeddings for {len(texts)} documents...")
     embeddings = model.encode(
@@ -106,17 +53,6 @@ def compute_embeddings_sbert(
 
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("-i", "--input", default="data/input/news-100.json")
-    # parser.add_argument("-o", "--output", default="data/embs_transformers.npz")
-    # parser.add_argument("-m", "--model", default="FacebookAI/xlm-roberta-large")
-    # parser.add_argument("-b", "--batch_size", type=int, default=32)
-    # parser.add_argument("-d", "--device", default="cuda")
-    # args = parser.parse_args()
-
-    # compute_embeddings_transformers(
-    #     args.input, args.output, args.model, args.batch_size, args.device
-    # )
 
     parser = argparse.ArgumentParser(
         description="Compute sentence embeddings for a JSONL corpus."
@@ -136,7 +72,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model",
         "-m",
-        default="dangvantuan/vietnamese-embedding",
+        default="dangvantuan/vietnamese-document-embedding",
         help="Name of the SentenceTransformer model to use.",
     )
     parser.add_argument(
