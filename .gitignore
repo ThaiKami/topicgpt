@@ -150,3 +150,4 @@ topic-gpt/tests/*
 test.ipynb
 
 data/
+model/

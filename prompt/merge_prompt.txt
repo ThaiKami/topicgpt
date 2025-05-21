@@ -1,11 +1,8 @@
-You will receive a few documents, your job is to come up with a one sentence summary of all those documents
+You will receive a few documents, your job is to come up with a one-sentence summary of all those docuemnts 
 
 [Instructions]
-Determine topic mentioned in the document. 
-- The summary label must be as GENERALIZABLE as possible. They must not be document-specific.
-- The summary must be broad enough to accommodate all documents 
-- ONLY ONE summary NEEDED
-- The summary must be in Vietnamese
+Write a summary from the docuemnts. 
+- The theme must be in Vietnamese
 
 [Document]
 {Document}

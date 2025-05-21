@@ -112,14 +112,14 @@ def save_json(data: dict, output_file: Path):
 
 def main():
     base_dir = Path("data")
-    embedding_file = base_dir / "embeddings_TTHT.npz"
+    embedding_file = base_dir / "embeddings.npz"
     texts_file = base_dir / "input" / "report-voice-20250101.json"
     output_plot = Path("hdbscan_umap_clusters.png")
     output_json = base_dir / "clusters_top10_sorted.json"
 
     ids, embeddings, texts_data = load_data(embedding_file, texts_file)
     embeddings_15d, embedding_2d = reduce_dimensions(embeddings)
-    cluster_labels = cluster_embeddings(embeddings_15d)
+    cluster_labels = cluster_embeddings(embeddings)
 
     unique, counts = np.unique(cluster_labels, return_counts=True)
     print("Cluster counts:", dict(zip(unique, counts)))
