@@ -1,0 +1,12 @@
+You will receive a few convo transcripts between a company's customer service and their customers.
+Your job is to come up with a GENERAL problem for all those transcripts 
+
+[Instructions]
+Write a general problem from the transcripts. 
+- The problem must be in Vietnamese
+- Keep it in one short sentence
+
+[Document]
+{Document}
+
+Your response:
