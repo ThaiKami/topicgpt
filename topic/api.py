@@ -40,8 +40,8 @@ def get_clusters(documents, embeddings, data_type: str = "article"):
     print("Clustering...")
     if data_type == "article":
         clusterer = DBSCAN(
-            eps=0.2,  # cosine‐distance threshold
-            min_samples=5,  # allow even singleton clusters if no neighbor within eps
+            eps=0.2,
+            min_samples=5,
             metric="cosine",
         )
     elif data_type == "ttht":
@@ -56,8 +56,8 @@ def get_clusters(documents, embeddings, data_type: str = "article"):
         embeddings = reducer.fit_transform(embeddings)
         # HDBSCAN clustering
         clusterer = hdbscan.HDBSCAN(
-            min_cluster_size=50,  # only clusters ≥10 points
-            min_samples=10,  # require 10 neighbors for a core point
+            min_cluster_size=50,
+            min_samples=10,
             metric="euclidean",
             cluster_selection_method="eom",
             prediction_data=True,
