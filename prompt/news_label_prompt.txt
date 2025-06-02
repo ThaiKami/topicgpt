@@ -3,7 +3,7 @@ Your job is to come up with a one-sentence summary of all those documents
 
 [Instructions]
 Write a summary from the documents. 
-- The theme must be in Vietnamese
+- The summary must be in Vietnamese
 - Keep it short
 
 [Document]
